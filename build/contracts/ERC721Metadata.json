@@ -1081,10 +1081,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3312,
-                        3313
+                        3303,
+                        3304
                       ],
-                      "referencedDeclaration": 3312,
+                      "referencedDeclaration": 3303,
                       "src": "1526:7:5",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1309,10 +1309,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3312,
-                        3313
+                        3303,
+                        3304
                       ],
-                      "referencedDeclaration": 3312,
+                      "referencedDeclaration": 3303,
                       "src": "1901:7:5",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1546,7 +1546,7 @@
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3359,
+                        "referencedDeclaration": 3350,
                         "src": "2324:5:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_super$_ERC721Metadata_$1935",
@@ -2619,10 +2619,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3312,
-                        3313
+                        3303,
+                        3304
                       ],
-                      "referencedDeclaration": 3312,
+                      "referencedDeclaration": 3303,
                       "src": "1526:7:5",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2847,10 +2847,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        3312,
-                        3313
+                        3303,
+                        3304
                       ],
-                      "referencedDeclaration": 3312,
+                      "referencedDeclaration": 3303,
                       "src": "1901:7:5",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3084,7 +3084,7 @@
                         "name": "super",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 3359,
+                        "referencedDeclaration": 3350,
                         "src": "2324:5:5",
                         "typeDescriptions": {
                           "typeIdentifier": "t_super$_ERC721Metadata_$1935",
@@ -3423,5 +3423,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2019-01-13T15:38:40.348Z"
+  "updatedAt": "2019-01-14T14:24:45.015Z"
 }

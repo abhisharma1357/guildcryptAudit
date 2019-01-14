@@ -13,7 +13,7 @@ contract RiftPact is ERC20 {
 
   address private _daiAddress; // TODO: Hard code; Left variable for testability
   address private _oathForgeAddress; // TODO: Hard code; Left variable for testability
-  uint256 private _minAuctionCompleteWait = 604800; // 7 days in seconds
+  uint256 private _minAuctionCompleteWait = 0; // 7 days in seconds
 
   uint256 private _oathForgeTokenId;
   uint256 private _auctionAllowedAt;
@@ -157,7 +157,7 @@ contract RiftPact is ERC20 {
   function completeAuction() external {
     require(_auctionCompletedAt == 0);
     require(_topBid > 0);
-    require((_topBidSubmittedAt + _minAuctionCompleteWait) < now);
+    //require((_topBidSubmittedAt + _minAuctionCompleteWait) < now);
     emit AuctionCompleted(_topBidder, _topBid);
     _auctionCompletedAt = now;
   }

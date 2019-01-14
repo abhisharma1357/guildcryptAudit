@@ -126,6 +126,36 @@ it('Should be able to Safe transferFrom accounts[2] to accounts[1] ', async () =
 
 });
 
+it('Should be able to set Approval for all tokens from accounts[1] to accounts[2] ', async () => {
+
+  let getApproved1 = await this.tokenhold.isApprovedForAll(accounts[1],accounts[2]);
+  assert.equal(getApproved1,false);
+  let balance = await this.tokenhold.balanceOf(accounts[1]);
+  assert.equal(balance.toNumber(),1);
+  let approve = await this.tokenhold.setApprovalForAll(accounts[2],true,{from : accounts[1]});
+  let getApproved = await this.tokenhold.isApprovedForAll(accounts[1],accounts[2]);
+  assert.equal(getApproved,true);
+
+});
+
+it("Should Not be able to Initialsed Sunset of any Token, from non-Owner Account ", async () => {
+try{
+  let sunsetInitiatedNow = await this.tokenhold.initiateSunset(0,{from : accounts[1]});
+}catch(error){
+  var error_ = 'VM Exception while processing transaction: revert';
+  assert.equal(error.message, error_, 'Reverted ');  
+}
+});
+
+it("Should be able to Initialsed Sunset Only by Owner", async () => {
+
+  let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(0);
+  assert.equal(sunsetInitiatedAt.toNumber(),0);
+  let sunsetInitiatedNow = await this.tokenhold.initiateSunset(0,{from : accounts[0]});
+  let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
+  //console.log(sunsetInitiatedAt1.toNumber());
+});
+
 
 it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
@@ -152,7 +182,7 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
   it("Should be able to get timestamp Redemption Code Hash ", async () => {
 
     let newowner1 = await this.tokenhold.redemptionCodeHashSubmittedAt(1);
-
+    //console.log(newowner1.toNumber());
   });
 
   it("Should be able to get correct next token ID and total supply ", async () => {
@@ -190,9 +220,56 @@ it('Should issue Dai token to accounts[0],[1],[2],[3]', async () => {
 
 });
 
+it('Should Not initialize constructor values of RiftPack Contract of TokenID that is not minted from OathForge(Test Case Failed)', async () => {
+
+  this.RiftPact = await RiftPact.new(20,100,this.daihold.address,this.tokenhold.address, { gas: 60000000 });
+});
+
 it('Should correctly initialize constructor values of RiftPack Contract', async () => {
 
   this.RiftPact = await RiftPact.new(0,100,this.daihold.address,this.tokenhold.address, { gas: 60000000 });
+});
+
+it('Should be able to check Correct DAI Token Address', async () => {
+
+  let Dai = await this.RiftPact.daiAddress();
+  assert.equal(Dai,this.daihold.address);
+
+});
+
+it('Should be able to check Correct oathForge Contract Address', async () => {
+
+  let oathForgeAddress = await this.RiftPact.oathForgeAddress();
+  assert.equal(oathForgeAddress,this.tokenhold.address);
+
+});
+
+it('Should be able to check Correct OathForgeToken ID', async () => {
+
+  let tokenID = await this.RiftPact.oathForgeTokenId();
+  assert.equal(tokenID.toNumber(),0);
+
+});
+
+it('Should be able to check Minimum BID', async () => {
+
+  let minBid = await this.RiftPact.minBid();
+  assert.equal(minBid.toNumber(),1);
+
+});
+
+it('Should be able to check Auction Allowed Time', async () => {
+
+  let auctionStart = await this.RiftPact.auctionAllowedAt();
+  assert.equal(auctionStart.toNumber(),100);
+
+});
+
+it('Should Check Aucton completed or not', async () => {
+
+  let auctionStatus = await this.RiftPact.auctionCompletedAt();
+  assert.equal(auctionStatus.toNumber(),0);
+  //console.log(auctionStatus.toNumber());
 });
 
 it('Should start Auction', async () => {
@@ -217,6 +294,13 @@ it('Should participate in a Auction by accounts[1]', async () => {
 
 });
 
+it('Should be able to get Top Bid After Auction started and participation', async () => {
+
+  let topBid = await this.RiftPact.topBid();
+  assert.equal(topBid.toNumber(),1000000000);
+  //console.log(topBid.toNumber());
+});
+
 it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder ', async () => {
 
   let Approve = await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[2]});
@@ -234,5 +318,99 @@ it('Should participate in a Auction by accounts[2]', async () => {
   //console.log(balance3.toNumber()/10**18,'balance of RiftPact after, dai token later');
 
 });
+
+it('Should Not be able participate in a Auction by accounts[3] by submiting bid less than minimum Bid', async () => {
+try{
+  let = await this.RiftPact.submitBid(20000,{from : accounts[2]});
+}catch(error){
+  var error_ = 'VM Exception while processing transaction: revert';
+  assert.equal(error.message, error_, 'Reverted ');    
+}
+});
+
+  it(" Should be able to transfer Tokens ", async () => {
+
+    let balancebefore = await this.RiftPact.balanceOf(accounts[6]);
+    assert.equal(balancebefore.toNumber(), 0, 'balance of beneficery(reciever)');
+    await this.RiftPact.transfer(accounts[6], 100, { from: accounts[0], gas: 5000000 });
+    let balanceRecieverAfter = await this.RiftPact.balanceOf.call(accounts[6]);
+    //console.log(balanceRecieverAfter.toNumber());
+    assert.equal(balanceRecieverAfter.toNumber(), 100, 'balance of beneficery(reciever)');    
+  });
+
+  it('Should Complete Auction', async () => {
+
+    let auctionStatus = await this.RiftPact.auctionCompletedAt();
+    //console.log(auctionStatus.toNumber());
+    assert.equal(auctionStatus.toNumber(),0);
+    let = await this.RiftPact.completeAuction();
+    let topBid = await this.RiftPact.topBid();
+    this.auctionStatus1 = await this.RiftPact.auctionCompletedAt();
+    //console.log(topBid.toNumber());
+    //assert.equal(topBid.toNumber(),1000000000);
+  });
+
+  it('Should Payout DAI Token After auction is completed', async () => {
+
+    let balance = await this.daihold.balanceOf(accounts[1]);
+    console.log(balance.toNumber()/10**18,'balance of accounts[1], dai token Before');
+    let auctionStatus = await this.RiftPact.auctionCompletedAt();
+    assert.equal(auctionStatus.toNumber(),this.auctionStatus1.toNumber());
+    let = await this.RiftPact.payout({from : accounts[1]});
+    let balance1 = await this.daihold.balanceOf(accounts[1]);
+    console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
+    
+    //let topBid = await this.RiftPact.topBid();
+    //console.log(topBid.toNumber());
+    //assert.equal(topBid.toNumber(),1000000000);
+  });
+
+  it('Should Not be able to Complete Auction When it is already Finish', async () => {
+    try{
+      let = await this.RiftPact.completeAuction({from : accounts[1]});
+    }catch(error){
+      var error_ = 'VM Exception while processing transaction: revert';
+      assert.equal(error.message, error_, 'Reverted ');    
+    }
+    });
+
+  it("should Approve address to spend specific token ", async () => {
+
+    this.RiftPact.approve(accounts[7], 100, { from: accounts[6] });
+    let allowance = await this.RiftPact.allowance.call(accounts[6], accounts[7]);
+    assert.equal(allowance.toNumber(), 100, "allowance is wrong when approve");
+
+  });
+
+  it("should increase Approval ", async () => {
+
+    let allowance1 = await this.RiftPact.allowance.call(accounts[6], accounts[7]);
+    assert.equal(allowance1, 100, "allowance is wrong when increase approval");
+    this.RiftPact.increaseAllowance(accounts[7], 100, { from: accounts[6] });
+    let allowanceNew = await this.RiftPact.allowance.call(accounts[6], accounts[7]);
+    assert.equal(allowanceNew, 200, "allowance is wrong when increase approval done");
+
+  });
+
+  it("should decrease Approval ", async () => {
+
+    let allowance1 = await this.RiftPact.allowance.call(accounts[6], accounts[7]);
+    assert.equal(allowance1, 200, "allowance is wrong when increase approval");
+    this.RiftPact.decreaseAllowance(accounts[7], 100, { from: accounts[6] });
+    let allowanceNew = await this.RiftPact.allowance.call(accounts[6], accounts[7]);
+    assert.equal(allowanceNew, 100, "allowance is wrong when increase approval done");
+
+  });
+
+  it("should not increase Approval for Negative Tokens", async () => {
+
+    try{      this.RiftPact.increaseAllowance(accounts[7], -100, { from: accounts[6] });
+
+  }catch(error){
+    var error_ = 'VM Exception while processing transaction: revert';
+    assert.equal(error.message, error_, 'Reverted ');
+  
+  }
+  });
 
 })
