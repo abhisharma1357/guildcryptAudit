@@ -44,7 +44,7 @@ contract ERC721 is ERC165, IERC721 {
      *     bytes4(keccak256('safeTransferFrom(address,address,uint256,bytes)'))
      */
 
-    constructor () public {
+    function ERC721() public {
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(_InterfaceId_ERC721);
     }

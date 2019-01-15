@@ -32,7 +32,7 @@ contract RiftPact is ERC20 {
   /// @param __auctionAllowedAt The timestamp at which anyone can start an auction
   /// @param __daiAddress The address of the DAI contract. **TODO: Hard code. Left Variable for testability.**
   /// @param __oathForgeAddress The address of the OathForge contract **TODO: Hard code. Left Variable for testability.**
-  constructor(
+  function RiftPact(
     uint256 __oathForgeTokenId,
     uint256 __auctionAllowedAt,
     address __daiAddress, // TODO: Hard code; Left variable for testability

@@ -226,7 +226,7 @@ contract Ownable {
    * @dev The Ownable constructor sets the original `owner` of the contract to the sender
    * account.
    */
-  constructor() public {
+function Ownable() public {
     owner = msg.sender;
   }
 
@@ -296,7 +296,7 @@ contract DAITOKEN is ConfigurableToken
   string public constant symbol = "DAI";
   uint32 public constant decimals = 18;
 
-  constructor(address _newOwner) public 
+  function DAITOKEN(address _newOwner) public 
   {
     require(_newOwner != address(0));
     owner = _newOwner;

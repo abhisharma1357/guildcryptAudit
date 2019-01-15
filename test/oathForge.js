@@ -57,6 +57,16 @@ try{
 
 });
 
+it('Should not be able to set Token URI of non minted Token id', async () => {
+  try{
+    let = await this.tokenhold.setTokenURI(10,'Oath Token Forge',{from: accounts[1]});
+  }catch(error){
+    var error_ = 'VM Exception while processing transaction: revert';
+    assert.equal(error.message, error_, 'Reverted ');
+  }
+  
+  });
+
 it('Should be able to set Token URI', async () => {
 
   let tokenURI = await this.tokenhold.tokenURI.call(0);
@@ -156,6 +166,42 @@ it("Should be able to Initialsed Sunset Only by Owner", async () => {
   //console.log(sunsetInitiatedAt1.toNumber());
 });
 
+it("Should Not be able to Initialsed Sunset for non minted token(Failed)", async () => {
+
+  let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(10);
+  //console.log(sunsetInitiatedAt.toNumber());
+  //assert.equal(sunsetInitiatedAt.toNumber(),0);
+  let sunsetInitiatedNow = await this.tokenhold.initiateSunset(10,{from : accounts[0]});
+  //let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
+  //console.log(sunsetInitiatedAt1.toNumber());
+});
+
+it('Should Not be able to mint token for with negative Sunset length(fail)', async () => {
+
+  let totalSupply1 = await this.tokenhold.totalSupply();
+  //console.log(totalSupply1.toNumber(),'Total supply before');
+  let mint = await this.tokenhold.mint(accounts[8],'Body',-200,{from : accounts[0]});
+  let sunsetLength1 = await this.tokenhold.sunsetLength(1);
+  let sunsetLength2 = await this.tokenhold.sunsetLength(2);
+  let sunsetLength3 = await this.tokenhold.sunsetLength(3);
+  //console.log(sunsetLength1.toNumber(),'sunset length 1');
+  //console.log(sunsetLength2.toNumber(),'sunset length 2');
+  //console.log(sunsetLength3.toNumber(),'sunset length 3');
+
+  let totalSupply = await this.tokenhold.totalSupply();
+  //console.log(totalSupply.toNumber(),'Total supply');
+  //console.log(totalSupply.toNumber(),'total supply');  
+});
+
+it("Should Not be able to submit Redemption Code Hash, for non minted token", async () => {
+
+  try{let newowner1 = await this.tokenhold.submitRedemptionCodeHash(7,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a, { from: accounts[8] });
+  }catch(error){
+    var error_ = 'VM Exception while processing transaction: revert';
+  assert.equal(error.message, error_, 'Reverted ');  
+
+  }
+});
 
 it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
@@ -179,6 +225,13 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
   });
 
+  it("Should be able to get Redemption Code Hash of Token id", async () => {
+
+    let newowner1 = await this.tokenhold.redemptionCodeHash(1);
+    assert.equal(newowner1,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a);
+    //console.log(newowner1.toNumber());
+  });
+
   it("Should be able to get timestamp Redemption Code Hash ", async () => {
 
     let newowner1 = await this.tokenhold.redemptionCodeHashSubmittedAt(1);
@@ -189,8 +242,8 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
     let nextTokenID = await this.tokenhold.nextTokenId();
     let totalSupply = await this.tokenhold.totalSupply();
-    assert.equal(nextTokenID.toNumber(),2);
-    assert.equal(totalSupply.toNumber(),1);
+    assert.equal(nextTokenID.toNumber(),3);
+    assert.equal(totalSupply.toNumber(),2);
  
 });
 
@@ -278,6 +331,12 @@ it('Should start Auction', async () => {
 
 });
 
+it('Should check Auction Started at', async () => {
+
+  let auctionStarted = await this.RiftPact.auctionStartedAt();
+  //console.log(auctionStarted.toNumber()); 
+});
+
 it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder ', async () => {
 
   let Approve = await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[1]});
@@ -298,6 +357,13 @@ it('Should be able to get Top Bid After Auction started and participation', asyn
 
   let topBid = await this.RiftPact.topBid();
   assert.equal(topBid.toNumber(),1000000000);
+  //console.log(topBid.toNumber());
+});
+
+it('Should be able to get Top Bidder After Auction started and participation', async () => {
+
+  let topBid = await this.RiftPact.topBidder();
+  assert.equal(topBid,accounts[1]);
   //console.log(topBid.toNumber());
 });
 
@@ -351,18 +417,37 @@ try{
   });
 
   it('Should Payout DAI Token After auction is completed', async () => {
-
-    let balance = await this.daihold.balanceOf(accounts[1]);
-    console.log(balance.toNumber()/10**18,'balance of accounts[1], dai token Before');
+    let balance4 = await this.daihold.balanceOf(this.RiftPact.address);
+    //console.log(balance4.toNumber()/10**18,'balance of contract, dai token Before');
+    let balance = await this.daihold.balanceOf(accounts[6]);
+    //console.log(balance.toNumber()/10**18,'balance of accounts[1], dai token Before');
     let auctionStatus = await this.RiftPact.auctionCompletedAt();
     assert.equal(auctionStatus.toNumber(),this.auctionStatus1.toNumber());
-    let = await this.RiftPact.payout({from : accounts[1]});
-    let balance1 = await this.daihold.balanceOf(accounts[1]);
-    console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
+    let = await this.RiftPact.payout({from : accounts[6]});
+    let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
+    //console.log(balance3.toNumber()/10**18,'balance of contract, dai token later');
+    let balance1 = await this.daihold.balanceOf(accounts[6]);
+    //console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
     
     //let topBid = await this.RiftPact.topBid();
     //console.log(topBid.toNumber());
     //assert.equal(topBid.toNumber(),1000000000);
+  });
+
+
+  it('Should Payout DAI Token After auction is completed', async () => {
+    let balance4 = await this.daihold.balanceOf(this.RiftPact.address);
+    //console.log(balance4.toNumber()/10**18,'balance of contract, dai token Before');
+    let balance = await this.daihold.balanceOf(accounts[0]);
+    //console.log(balance.toNumber()/10**18,'balance of accounts[1], dai token Before');
+    let auctionStatus = await this.RiftPact.auctionCompletedAt();
+    //assert.equal(auctionStatus.toNumber(),this.auctionStatus1.toNumber());
+    let = await this.RiftPact.payout({from : accounts[0]});
+    let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
+    //console.log(balance3.toNumber()/10**18,'balance of contract, dai token later');
+    let balance1 = await this.daihold.balanceOf(accounts[0]);
+    //console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
+
   });
 
   it('Should Not be able to Complete Auction When it is already Finish', async () => {

@@ -8,6 +8,8 @@ module.exports = {
     development: {
       host: 'localhost',
       port: 8545,
+      gas: 45000000,
+      gasPrice: 10000000000,
       network_id: '*' // Match any network id
       //from: '0xcc42b083231d36976a1e018ee219fd37f0079741'
     },
@@ -15,8 +17,8 @@ module.exports = {
       host: 'localhost',
       network_id: '*',
       port: 8545,         // <-- If you change this, also set the port option in .solcover.js.
-      gas:0xfffffffffff, // <-- Use this high gas value
-      gasPrice: 0x01     // <-- Use this low gas price
+      gas: 45000000,
+      gasPrice: 10000000000
     },
     // See <http://truffleframework.com/docs/advanced/configuration>
     // to customize your Truffle configuration!

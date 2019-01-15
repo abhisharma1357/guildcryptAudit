@@ -20,7 +20,7 @@ contract OathForge is ERC721, ERC721Metadata, Ownable {
 
   /// @param name The ERC721 Metadata name
   /// @param symbol The ERC721 Metadata symbol
-  constructor(string name, string symbol) ERC721Metadata(name, symbol) public {}
+  function OathForge(string name, string symbol) ERC721Metadata(name, symbol) public {}
 
   /// @dev Emits when a sunset has been initiated
   /// @param tokenId The token id
