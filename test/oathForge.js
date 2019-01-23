@@ -320,11 +320,11 @@ it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behal
 
 it('Should participate in a Auction by accounts[1]', async () => {
 
-  let balance1 = await this.daihold.balanceOf(accounts[1]);
-  //console.log(balance1.toNumber()/10**18);
+  let balanceAccountOneBefore = await this.daihold.balanceOf(accounts[1]);
+  assert.equal(balanceAccountOneBefore.toNumber()/10**18,2);
   await this.RiftPact.submitBid(1000000000,{from : accounts[1]});
-  let balance2 = await this.daihold.balanceOf(accounts[1]);
-  //console.log(balance2.toNumber()/10**18);
+  let balanceAccountOneAfter = await this.daihold.balanceOf(accounts[1]);
+  assert.equal(balanceAccountOneAfter.toNumber()/10**18,1.99999);
 
 });
 
@@ -332,14 +332,12 @@ it('Should be able to get Top Bid After Auction started and participation', asyn
 
   let topBid = await this.RiftPact.topBid();
   assert.equal(topBid.toNumber(),1000000000);
-  //console.log(topBid.toNumber());
 });
 
 it('Should be able to get Top Bidder After Auction started and participation', async () => {
 
   let topBidder = await this.RiftPact.topBidder();
   assert.equal(topBidder,accounts[1]);
-  //console.log(topBid.toNumber());
 });
 
 it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder accounts[2] ', async () => {
@@ -351,13 +349,13 @@ it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behal
 
 it('Should participate in a Auction by accounts[2]', async () => {
 
-  let balance1 = await this.daihold.balanceOf(accounts[2]);
-  //console.log(balance1.toNumber()/10**18,'balance of accounts[2], dai token ');
-  let = await this.RiftPact.submitBid(20000000000,{from : accounts[2]});
-  let balance2 = await this.daihold.balanceOf(accounts[2]);
-  //console.log(balance2.toNumber()/10**18,'balance of accounts[2], dai token later');
-  let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
-  //console.log(balance3.toNumber()/10**18,'balance of RiftPact after, dai token later');
+  let balanceAccountTwo = await this.daihold.balanceOf(accounts[2]);
+  assert.equal(balanceAccountTwo.toNumber()/10**18,3);
+  await this.RiftPact.submitBid(20000000000,{from : accounts[2]});
+  let balanceAccountTwoLater = await this.daihold.balanceOf(accounts[2]);
+  assert.equal(balanceAccountTwoLater.toNumber()/10**18,2.9998);
+  let balanceDaiContract = await this.daihold.balanceOf(this.RiftPact.address);
+  assert.equal(balanceDaiContract.toNumber()/10**18,0.0002);
   let topBid = await this.RiftPact.topBid();
   assert.equal(topBid.toNumber(),20000000000);
 });
@@ -377,57 +375,41 @@ try{
     assert.equal(balancebefore.toNumber(), 0, 'balance of beneficery(reciever)');
     await this.RiftPact.transfer(accounts[6], 100, { from: accounts[0], gas: 5000000 });
     let balanceRecieverAfter = await this.RiftPact.balanceOf.call(accounts[6]);
-    //console.log(balanceRecieverAfter.toNumber());
     assert.equal(balanceRecieverAfter.toNumber(), 100, 'balance of beneficery(reciever)');    
   });
 
   it('Should Complete Auction', async () => {
 
     let auctionStatus = await this.RiftPact.auctionCompletedAt();
-    //console.log(auctionStatus.toNumber());
     assert.equal(auctionStatus.toNumber(),0);
     let = await this.RiftPact.completeAuction();
-    let topBid = await this.RiftPact.topBid();
-    this.auctionStatus1 = await this.RiftPact.auctionCompletedAt();
-    //console.log(topBid.toNumber());
-    //assert.equal(topBid.toNumber(),1000000000);
   });
 
   it('Should Payout DAI Token After auction is completed', async () => {
-    let balance4 = await this.daihold.balanceOf(this.RiftPact.address);
-    //console.log(balance4.toNumber()/10**18,'balance of contract, dai token Before');
-    let balance = await this.daihold.balanceOf(accounts[6]);
-    //console.log(balance.toNumber()/10**18,'balance of accounts[1], dai token Before');
-    let auctionStatus = await this.RiftPact.auctionCompletedAt();
-    assert.equal(auctionStatus.toNumber(),this.auctionStatus1.toNumber());
-    let = await this.RiftPact.payout({from : accounts[6]});
-    let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
-    //console.log(balance3.toNumber()/10**18,'balance of contract, dai token later');
-    let balance1 = await this.daihold.balanceOf(accounts[6]);
-    //console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
+    let balanceRiftPActInDai = await this.daihold.balanceOf(this.RiftPact.address);
+    assert.equal(balanceRiftPActInDai.toNumber()/10**18,0.0002);
+    let balanceAccountOneInDai = await this.daihold.balanceOf(accounts[6]);
+    assert.equal(balanceAccountOneInDai.toNumber(),0);
+    await this.RiftPact.payout({from : accounts[6]});
+    let balanceRiftPActInDaiLater = await this.daihold.balanceOf(this.RiftPact.address);
+    assert.equal(balanceRiftPActInDaiLater.toNumber()/10**18,0.000198);
+    let balanceAccountOneInDaiLater = await this.daihold.balanceOf(accounts[6]);
+    assert.equal(balanceAccountOneInDaiLater.toNumber()/10**18,0.000002);
     
-    //let topBid = await this.RiftPact.topBid();
-    //console.log(topBid.toNumber());
-    //assert.equal(topBid.toNumber(),1000000000);
   });
 
 
   it('Should Payout DAI Token After auction is completed', async () => {
     let balance4 = await this.daihold.balanceOf(this.RiftPact.address);
     assert.equal(balance4.toNumber(),198000000000000);
-    //console.log(balance4.toNumber(),'balance of contract, dai token Before');
     let balance = await this.daihold.balanceOf(accounts[0]);
     assert.equal(balance.toNumber()/10**18,1);
-    //console.log(balance.toNumber(),'balance of accounts[1], dai token Before');
-    let auctionStatus = await this.RiftPact.auctionCompletedAt();
-    //assert.equal(auctionStatus.toNumber(),this.auctionStatus1.toNumber());
     let = await this.RiftPact.payout({from : accounts[0]});
     let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
     assert.equal(balance3.toNumber(),0);
-    //console.log(balance3.toNumber()/10**18,'balance of contract, dai token later');
     let balance1 = await this.daihold.balanceOf(accounts[0]);
     assert.equal(balance1.toNumber()/10**18,1.000198);
-    //console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
+    
 
   });
 
