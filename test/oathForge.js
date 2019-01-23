@@ -1,22 +1,8 @@
 const OathForge = artifacts.require('OathForge.sol');
 const RiftPact = artifacts.require('RiftPact.sol');
 const DaiToken = artifacts.require('DAITOKEN.sol');
-
-//const { expectThrow } = require('openzeppelin-solidity/test/helpers/expectThrow');
-//const { EVMRevert } = require('openzeppelin-solidity/test/helpers/EVMRevert');
 var Web3 = require("web3");
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
-//account 0 owner
-//account 1 token holder
-//account 2 token holder
-//account 3 token holder
-//account 4  
-//account 5 
-//account 6 
-//account 7 
-//account 8 
-//account 9 
 
 contract('OathForge Contract', async (accounts) => {
   
@@ -30,7 +16,7 @@ contract('OathForge Contract', async (accounts) => {
   
   it('Should Not be able to mint token for accounts[1] by Non Owner Account', async () => {
 
-  try{  let mint = await this.tokenhold.mint(accounts[1],'Body',200,{from : accounts[1]});
+  try{ await this.tokenhold.mint(accounts[1],'Body',200,{from : accounts[1]});
   }catch(error){
     var error_ = 'VM Exception while processing transaction: revert';
     assert.equal(error.message, error_, 'Reverted ');
@@ -40,7 +26,7 @@ contract('OathForge Contract', async (accounts) => {
 
   it('Should be able to mint token for accounts[1]', async () => {
 
-    let mint = await this.tokenhold.mint(accounts[1],'Body',200,{from : accounts[0]});
+    await this.tokenhold.mint(accounts[1],'Body',200,{from : accounts[0]});
     let totalSupply = await this.tokenhold.totalSupply();
     let sunsetLength = await this.tokenhold.sunsetLength(0);
     assert.equal(totalSupply.toNumber(),1);
@@ -49,7 +35,7 @@ contract('OathForge Contract', async (accounts) => {
 
 it('Should not be able to set Token URI from non Owner Account', async () => {
 try{
-  let = await this.tokenhold.setTokenURI(0,'Oath Token Forge',{from: accounts[1]});
+  await this.tokenhold.setTokenURI(0,'Oath Token Forge',{from: accounts[1]});
 }catch(error){
   var error_ = 'VM Exception while processing transaction: revert';
   assert.equal(error.message, error_, 'Reverted ');
@@ -59,7 +45,7 @@ try{
 
 it('Should not be able to set Token URI of non minted Token id', async () => {
   try{
-    let = await this.tokenhold.setTokenURI(10,'Oath Token Forge',{from: accounts[1]});
+    await this.tokenhold.setTokenURI(10,'Oath Token Forge',{from: accounts[1]});
   }catch(error){
     var error_ = 'VM Exception while processing transaction: revert';
     assert.equal(error.message, error_, 'Reverted ');
@@ -70,12 +56,10 @@ it('Should not be able to set Token URI of non minted Token id', async () => {
 it('Should be able to set Token URI', async () => {
 
   let tokenURI = await this.tokenhold.tokenURI.call(0);
-  //console.log(tokenURI.toString());
   assert.equal(tokenURI.toString(),'Body');
   await this.tokenhold.setTokenURI(0,'Oath Token Forge',{from: accounts[0]});
   let tokenURI1 = await this.tokenhold.tokenURI.call(0);
   assert.equal(tokenURI1.toString(),'Oath Token Forge'); 
-  //console.log(tokenURI1.toString());
 });
 
 it('Should be able to mint token for accounts[3]', async () => {
@@ -89,7 +73,7 @@ it('Should be able to mint token for accounts[3]', async () => {
 
 it('Should Not be able to approve accounts[2] to spend tokens on the behalf of accounts[1] of negative token ID ', async () => {
 
-try{  let approve = await this.tokenhold.approve(accounts[2],-1,{from : accounts[1]});
+try{  await this.tokenhold.approve(accounts[2],-1,{from : accounts[1]});
 }catch(error){
   var error_ = 'VM Exception while processing transaction: revert';
   assert.equal(error.message, error_, 'Reverted ');  
@@ -150,7 +134,7 @@ it('Should be able to set Approval for all tokens from accounts[1] to accounts[2
 
 it("Should Not be able to Initialsed Sunset of any Token, from non-Owner Account ", async () => {
 try{
-  let sunsetInitiatedNow = await this.tokenhold.initiateSunset(0,{from : accounts[1]});
+  await this.tokenhold.initiateSunset(0,{from : accounts[1]});
 }catch(error){
   var error_ = 'VM Exception while processing transaction: revert';
   assert.equal(error.message, error_, 'Reverted ');  
@@ -162,42 +146,25 @@ it("Should be able to Initialsed Sunset Only by Owner", async () => {
   let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(0);
   assert.equal(sunsetInitiatedAt.toNumber(),0);
   await this.tokenhold.initiateSunset(0,{from : accounts[0]});
-  let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
-  //console.log(sunsetInitiatedAt1.toNumber());
 });
 
 it("Should Not be able to Initialsed Sunset for non minted token(Failed)", async () => {
 
   let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(10);
-  //console.log(sunsetInitiatedAt.toNumber());
   assert.equal(sunsetInitiatedAt.toNumber(),0);
   await this.tokenhold.initiateSunset(10,{from : accounts[0]});
-  let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(10);
-  //assert.equal(sunsetInitiatedAt1.toNumber(),10);// This should be failed as explained in report under issue and as a suggestions also
-  //let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
-  //console.log(sunsetInitiatedAt1.toNumber());
+ // This should be failed as explained in report under issue and as a suggestions also
+  
 });
 
 it('Should Not be able to mint token for with negative Sunset length(fail)', async () => {
 
-  let totalSupply1 = await this.tokenhold.totalSupply();
-  //console.log(totalSupply1.toNumber(),'Total supply before');
   await this.tokenhold.mint(accounts[8],'Body',-200,{from : accounts[0]});
-  let sunsetLength1 = await this.tokenhold.sunsetLength(1);
-  let sunsetLength2 = await this.tokenhold.sunsetLength(2);
-  let sunsetLength3 = await this.tokenhold.sunsetLength(3);
-  //console.log(sunsetLength1.toNumber(),'sunset length 1');
-  //console.log(sunsetLength2.toNumber(),'sunset length 2');
-  //console.log(sunsetLength3.toNumber(),'sunset length 3');
-
-  let totalSupply = await this.tokenhold.totalSupply();
-  //console.log(totalSupply.toNumber(),'Total supply');
-  //console.log(totalSupply.toNumber(),'total supply');  
 });
 
 it("Should Not be able to submit Redemption Code Hash, for non minted token", async () => {
 
-  try{let newowner1 = await this.tokenhold.submitRedemptionCodeHash(7,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a, { from: accounts[8] });
+  try{await this.tokenhold.submitRedemptionCodeHash(7,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a, { from: accounts[8] });
   }catch(error){
     var error_ = 'VM Exception while processing transaction: revert';
   assert.equal(error.message, error_, 'Reverted ');  
@@ -220,7 +187,6 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
     assert.equal(ownerOld1, accounts[4], 'Transfered ownership');
     await this.tokenhold.renounceOwnership({from : accounts[4]});
     let newowner1 = await this.tokenhold.owner.call();
-    //console.log(newowner1);
     let address1 = 0x0000000000000000000000000000000000000000;
     assert.equal(newowner1,address1, 'Transfered ownership');
   });
@@ -273,7 +239,6 @@ it('Should issue Dai token to accounts[0],[1],[2],[3]', async () => {
   let balance2 = await this.daihold.balanceOf(accounts[1]);
   let balance3 = await this.daihold.balanceOf(accounts[2]);
   let balance4 = await this.daihold.balanceOf(accounts[3]);
-  //console.log(DAI4.toNumber()/10**18);
   assert.equal(balance1.toNumber()/10**18,1);
   assert.equal(balance2.toNumber()/10**18,2);
   assert.equal(balance3.toNumber()/10**18,3);
@@ -330,7 +295,6 @@ it('Should Check Aucton completed or not', async () => {
 
   let auctionStatus = await this.RiftPact.auctionCompletedAt();
   assert.equal(auctionStatus.toNumber(),0);
-  //console.log(auctionStatus.toNumber());
 });
 
 it('Should start Auction', async () => {
@@ -358,7 +322,7 @@ it('Should participate in a Auction by accounts[1]', async () => {
 
   let balance1 = await this.daihold.balanceOf(accounts[1]);
   //console.log(balance1.toNumber()/10**18);
-  let = await this.RiftPact.submitBid(1000000000,{from : accounts[1]});
+  await this.RiftPact.submitBid(1000000000,{from : accounts[1]});
   let balance2 = await this.daihold.balanceOf(accounts[1]);
   //console.log(balance2.toNumber()/10**18);
 
