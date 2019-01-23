@@ -325,9 +325,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.24;\n\nimport \"./IERC721.sol\";\n\n/**\n * @title ERC-721 Non-Fungible Token Standard, optional metadata extension\n * @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md\n */\ncontract IERC721Metadata is IERC721 {\n    function name() external view returns (string);\n    function symbol() external view returns (string);\n    function tokenURI(uint256 tokenId) external view returns (string);\n}\n",
-  "sourcePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC721Metadata.sol",
+  "sourcePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC721Metadata.sol",
   "ast": {
-    "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC721Metadata.sol",
+    "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC721Metadata.sol",
     "exportedSymbols": {
       "IERC721Metadata": [
         2140
@@ -348,7 +348,7 @@
         "src": "0:24:9"
       },
       {
-        "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC721.sol",
+        "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC721.sol",
         "file": "./IERC721.sol",
         "id": 2120,
         "nodeType": "ImportDirective",
@@ -598,7 +598,7 @@
     "src": "0:424:9"
   },
   "legacyAST": {
-    "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC721Metadata.sol",
+    "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC721Metadata.sol",
     "exportedSymbols": {
       "IERC721Metadata": [
         2140
@@ -619,7 +619,7 @@
         "src": "0:24:9"
       },
       {
-        "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC721.sol",
+        "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC721.sol",
         "file": "./IERC721.sol",
         "id": 2120,
         "nodeType": "ImportDirective",
@@ -873,6 +873,6 @@
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2019-01-15T17:44:28.639Z"
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2019-01-22T23:24:48.080Z"
 }

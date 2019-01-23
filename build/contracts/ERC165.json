@@ -32,9 +32,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.24;\n\nimport \"./IERC165.sol\";\n\n/**\n * @title ERC165\n * @author Matt Condon (@shrugs)\n * @dev Implements ERC165 using a lookup table.\n */\ncontract ERC165 is IERC165 {\n    bytes4 private constant _InterfaceId_ERC165 = 0x01ffc9a7;\n    /**\n     * 0x01ffc9a7 ===\n     *     bytes4(keccak256('supportsInterface(bytes4)'))\n     */\n\n    /**\n     * @dev a mapping of interface id to whether or not it's supported\n     */\n    mapping(bytes4 => bool) private _supportedInterfaces;\n\n    /**\n     * @dev A contract implementing SupportsInterfaceWithLookup\n     * implement ERC165 itself\n     */\n    function ERC165() internal {\n        _registerInterface(_InterfaceId_ERC165);\n    }\n\n    /**\n     * @dev implement supportsInterface(bytes4) using a lookup table\n     */\n    function supportsInterface(bytes4 interfaceId) external view returns (bool) {\n        return _supportedInterfaces[interfaceId];\n    }\n\n    /**\n     * @dev internal method for registering an interface\n     */\n    function _registerInterface(bytes4 interfaceId) internal {\n        require(interfaceId != 0xffffffff);\n        _supportedInterfaces[interfaceId] = true;\n    }\n}\n",
-  "sourcePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/ERC165.sol",
+  "sourcePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/ERC165.sol",
   "ast": {
-    "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/ERC165.sol",
+    "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/ERC165.sol",
     "exportedSymbols": {
       "ERC165": [
         817
@@ -55,7 +55,7 @@
         "src": "0:24:2"
       },
       {
-        "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC165.sol",
+        "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC165.sol",
         "file": "./IERC165.sol",
         "id": 769,
         "nodeType": "ImportDirective",
@@ -654,7 +654,7 @@
     "src": "0:1153:2"
   },
   "legacyAST": {
-    "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/ERC165.sol",
+    "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/ERC165.sol",
     "exportedSymbols": {
       "ERC165": [
         817
@@ -675,7 +675,7 @@
         "src": "0:24:2"
       },
       {
-        "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC165.sol",
+        "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC165.sol",
         "file": "./IERC165.sol",
         "id": 769,
         "nodeType": "ImportDirective",
@@ -1278,6 +1278,6 @@
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2019-01-15T17:44:28.610Z"
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2019-01-22T23:24:48.067Z"
 }

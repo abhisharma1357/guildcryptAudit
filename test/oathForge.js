@@ -19,7 +19,7 @@ var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 //account 9 
 
 contract('OathForge Contract', async (accounts) => {
-
+  
   it('Should correctly initialize constructor values of oathForge Contract', async () => {
 
     this.tokenhold = await OathForge.new(OathForge,OathForge, { gas: 60000000 });
@@ -27,7 +27,7 @@ contract('OathForge Contract', async (accounts) => {
     assert.equal(owner, accounts[0]);
 
   });
-
+  
   it('Should Not be able to mint token for accounts[1] by Non Owner Account', async () => {
 
   try{  let mint = await this.tokenhold.mint(accounts[1],'Body',200,{from : accounts[1]});
@@ -71,8 +71,10 @@ it('Should be able to set Token URI', async () => {
 
   let tokenURI = await this.tokenhold.tokenURI.call(0);
   //console.log(tokenURI.toString());
+  assert.equal(tokenURI.toString(),'Body');
   let = await this.tokenhold.setTokenURI(0,'Oath Token Forge',{from: accounts[0]});
   let tokenURI1 = await this.tokenhold.tokenURI.call(0);
+  assert.equal(tokenURI1.toString(),'Oath Token Forge'); 
   //console.log(tokenURI1.toString());
 });
 
@@ -170,8 +172,10 @@ it("Should Not be able to Initialsed Sunset for non minted token(Failed)", async
 
   let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(10);
   //console.log(sunsetInitiatedAt.toNumber());
-  //assert.equal(sunsetInitiatedAt.toNumber(),0);
+  assert.equal(sunsetInitiatedAt.toNumber(),0);
   let sunsetInitiatedNow = await this.tokenhold.initiateSunset(10,{from : accounts[0]});
+  let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(10);
+  //assert.equal(sunsetInitiatedAt1.toNumber(),10);// This should be failed as explained in report under issue and as a suggestions also
   //let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
   //console.log(sunsetInitiatedAt1.toNumber());
 });
@@ -213,28 +217,33 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
   it("Should be able to Reannouance ownership of OathForge Contract ", async () => {
 
-
-    let newowner1 = await this.tokenhold.renounceOwnership({from : accounts[4]});
+    let ownerOld1 = await this.tokenhold.owner.call();
+    assert.equal(ownerOld1, accounts[4], 'Transfered ownership');
+    let newowner = await this.tokenhold.renounceOwnership({from : accounts[4]});
+    let newowner1 = await this.tokenhold.owner.call();
+    //console.log(newowner1);
+    let address1 = 0x0000000000000000000000000000000000000000;
+    assert.equal(newowner1,address1, 'Transfered ownership');
   });
 
   it("Should be able to submit Redemption Code Hash ", async () => {
 
     let balance1 = await this.tokenhold.balanceOf(accounts[3]);
     assert.equal(balance1.toNumber(),1);
-    let newowner1 = await this.tokenhold.submitRedemptionCodeHash(1,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a, { from: accounts[3] });
+    await this.tokenhold.submitRedemptionCodeHash(1,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a, { from: accounts[3] });
 
   });
 
   it("Should be able to get Redemption Code Hash of Token id", async () => {
 
-    let newowner1 = await this.tokenhold.redemptionCodeHash(1);
-    assert.equal(newowner1,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a);
+    let codeHash = await this.tokenhold.redemptionCodeHash(1);
+    assert.equal(codeHash,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a);
     //console.log(newowner1.toNumber());
   });
 
   it("Should be able to get timestamp Redemption Code Hash ", async () => {
 
-    let newowner1 = await this.tokenhold.redemptionCodeHashSubmittedAt(1);
+    let codeHash = await this.tokenhold.redemptionCodeHashSubmittedAt(1);
     //console.log(newowner1.toNumber());
   });
 
@@ -362,8 +371,8 @@ it('Should be able to get Top Bid After Auction started and participation', asyn
 
 it('Should be able to get Top Bidder After Auction started and participation', async () => {
 
-  let topBid = await this.RiftPact.topBidder();
-  assert.equal(topBid,accounts[1]);
+  let topBidder = await this.RiftPact.topBidder();
+  assert.equal(topBidder,accounts[1]);
   //console.log(topBid.toNumber());
 });
 
@@ -489,7 +498,8 @@ try{
 
   it("should not increase Approval for Negative Tokens", async () => {
 
-    try{      this.RiftPact.increaseAllowance(accounts[7], -100, { from: accounts[6] });
+  try{      
+    this.RiftPact.increaseAllowance(accounts[7], -100, { from: accounts[6] });
 
   }catch(error){
     var error_ = 'VM Exception while processing transaction: revert';

@@ -180,9 +180,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.4.24;\n\n/**\n * @title ERC20 interface\n * @dev see https://github.com/ethereum/EIPs/issues/20\n */\ninterface IERC20 {\n    function totalSupply() external view returns (uint256);\n\n    function balanceOf(address who) external view returns (uint256);\n\n    function allowance(address owner, address spender) external view returns (uint256);\n\n    function transfer(address to, uint256 value) external returns (bool);\n\n    function approve(address spender, uint256 value) external returns (bool);\n\n    function transferFrom(address from, address to, uint256 value) external returns (bool);\n\n    event Transfer(address indexed from, address indexed to, uint256 value);\n\n    event Approval(address indexed owner, address indexed spender, uint256 value);\n}\n",
-  "sourcePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC20.sol",
+  "sourcePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC20.sol",
   "ast": {
-    "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC20.sol",
+    "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC20.sol",
     "exportedSymbols": {
       "IERC20": [
         2014
@@ -1016,7 +1016,7 @@
     "src": "0:764:7"
   },
   "legacyAST": {
-    "absolutePath": "/home/abhi_21094/Projects/GuildCryptAudit/crypt/contracts/IERC20.sol",
+    "absolutePath": "/home/abhi_21094/Projects/guildcryptAudit/contracts/IERC20.sol",
     "exportedSymbols": {
       "IERC20": [
         2014
@@ -1854,6 +1854,6 @@
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2019-01-15T17:44:28.636Z"
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2019-01-22T23:24:48.079Z"
 }
