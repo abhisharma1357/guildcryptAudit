@@ -362,7 +362,7 @@ it('Should participate in a Auction by accounts[2]', async () => {
 
 it('Should Not be able participate in a Auction by accounts[3] by submiting bid less than minimum Bid', async () => {
 try{
-  let = await this.RiftPact.submitBid(20000,{from : accounts[2]});
+  await this.RiftPact.submitBid(20000,{from : accounts[2]});
 }catch(error){
   var error_ = 'VM Exception while processing transaction: revert';
   assert.equal(error.message, error_, 'Reverted ');    
@@ -382,7 +382,7 @@ try{
 
     let auctionStatus = await this.RiftPact.auctionCompletedAt();
     assert.equal(auctionStatus.toNumber(),0);
-    let = await this.RiftPact.completeAuction();
+    await this.RiftPact.completeAuction();
   });
 
   it('Should Payout DAI Token After auction is completed', async () => {
@@ -400,22 +400,22 @@ try{
 
 
   it('Should Payout DAI Token After auction is completed', async () => {
-    let balance4 = await this.daihold.balanceOf(this.RiftPact.address);
-    assert.equal(balance4.toNumber(),198000000000000);
-    let balance = await this.daihold.balanceOf(accounts[0]);
-    assert.equal(balance.toNumber()/10**18,1);
-    let = await this.RiftPact.payout({from : accounts[0]});
-    let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
-    assert.equal(balance3.toNumber(),0);
-    let balance1 = await this.daihold.balanceOf(accounts[0]);
-    assert.equal(balance1.toNumber()/10**18,1.000198);
+    let balanceRiftPActInDai = await this.daihold.balanceOf(this.RiftPact.address);
+    assert.equal(balanceRiftPActInDai.toNumber(),198000000000000);
+    let balanceAccountZeroInDai = await this.daihold.balanceOf(accounts[0]);
+    assert.equal(balanceAccountZeroInDai.toNumber()/10**18,1);
+    await this.RiftPact.payout({from : accounts[0]});
+    let balanceRiftPActInDaiLater = await this.daihold.balanceOf(this.RiftPact.address);
+    assert.equal(balanceRiftPActInDaiLater.toNumber(),0);
+    let balanceAccountZeroInDaiLater = await this.daihold.balanceOf(accounts[0]);
+    assert.equal(balanceAccountZeroInDaiLater.toNumber()/10**18,1.000198);
     
 
   });
 
   it('Should Not be able to Complete Auction When it is already Finish', async () => {
     try{
-      let = await this.RiftPact.completeAuction({from : accounts[1]});
+      await this.RiftPact.completeAuction({from : accounts[1]});
     }catch(error){
       var error_ = 'VM Exception while processing transaction: revert';
       assert.equal(error.message, error_, 'Reverted ');    
