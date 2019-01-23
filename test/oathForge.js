@@ -72,7 +72,7 @@ it('Should be able to set Token URI', async () => {
   let tokenURI = await this.tokenhold.tokenURI.call(0);
   //console.log(tokenURI.toString());
   assert.equal(tokenURI.toString(),'Body');
-  let = await this.tokenhold.setTokenURI(0,'Oath Token Forge',{from: accounts[0]});
+  await this.tokenhold.setTokenURI(0,'Oath Token Forge',{from: accounts[0]});
   let tokenURI1 = await this.tokenhold.tokenURI.call(0);
   assert.equal(tokenURI1.toString(),'Oath Token Forge'); 
   //console.log(tokenURI1.toString());
@@ -80,7 +80,7 @@ it('Should be able to set Token URI', async () => {
 
 it('Should be able to mint token for accounts[3]', async () => {
 
-    let mint = await this.tokenhold.mint(accounts[3],'Body',200,{from : accounts[0]});
+    await this.tokenhold.mint(accounts[3],'Body',200,{from : accounts[0]});
     let totalSupply = await this.tokenhold.totalSupply();
     let sunsetLength = await this.tokenhold.sunsetLength(0);
     assert.equal(totalSupply.toNumber(),2);
@@ -100,8 +100,7 @@ it('Should be able to approve accounts[2] to spend tokens on the behalf of accou
 
     let balance = await this.tokenhold.balanceOf(accounts[1]);
     assert.equal(balance.toNumber(),1);
-    let tokenId = await this.tokenhold.ownerOf.call(0);
-    let approve = await this.tokenhold.approve(accounts[2],0,{from : accounts[1]});
+    await this.tokenhold.approve(accounts[2],0,{from : accounts[1]});
     let getApproved = await this.tokenhold.getApproved(0);
     assert.equal(getApproved,accounts[2]);
 
@@ -111,7 +110,7 @@ it('Should be able to transferFrom accounts[1] to accounts[2] ', async () => {
 
     let balance1 = await this.tokenhold.balanceOf(accounts[1]);
     assert.equal(balance1.toNumber(),1);
-    let transferFrom = await this.tokenhold.transferFrom(accounts[1],accounts[2],0,{from : accounts[2]});
+    await this.tokenhold.transferFrom(accounts[1],accounts[2],0,{from : accounts[2]});
     let balance = await this.tokenhold.balanceOf(accounts[2]);
     assert.equal(balance.toNumber(),1);
  
@@ -121,8 +120,7 @@ it('Should be able to approve accounts[1] to spend tokens on the behalf of accou
 
   let balance = await this.tokenhold.balanceOf(accounts[2]);
   assert.equal(balance.toNumber(),1);
-  let tokenId = await this.tokenhold.ownerOf.call(0);
-  let approve = await this.tokenhold.approve(accounts[1],0,{from : accounts[2]});
+  await this.tokenhold.approve(accounts[1],0,{from : accounts[2]});
   let getApproved = await this.tokenhold.getApproved(0);
   assert.equal(getApproved,accounts[1]);
 
@@ -132,7 +130,7 @@ it('Should be able to Safe transferFrom accounts[2] to accounts[1] ', async () =
 
   let balance1 = await this.tokenhold.balanceOf(accounts[2]);
   assert.equal(balance1.toNumber(),1);
-  let transferFrom = await this.tokenhold.transferFrom(accounts[2],accounts[1],0,{from : accounts[1]});
+  await this.tokenhold.transferFrom(accounts[2],accounts[1],0,{from : accounts[1]});
   let balance = await this.tokenhold.balanceOf(accounts[1]);
   assert.equal(balance.toNumber(),1);
 
@@ -144,7 +142,7 @@ it('Should be able to set Approval for all tokens from accounts[1] to accounts[2
   assert.equal(getApproved1,false);
   let balance = await this.tokenhold.balanceOf(accounts[1]);
   assert.equal(balance.toNumber(),1);
-  let approve = await this.tokenhold.setApprovalForAll(accounts[2],true,{from : accounts[1]});
+  await this.tokenhold.setApprovalForAll(accounts[2],true,{from : accounts[1]});
   let getApproved = await this.tokenhold.isApprovedForAll(accounts[1],accounts[2]);
   assert.equal(getApproved,true);
 
@@ -163,7 +161,7 @@ it("Should be able to Initialsed Sunset Only by Owner", async () => {
 
   let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(0);
   assert.equal(sunsetInitiatedAt.toNumber(),0);
-  let sunsetInitiatedNow = await this.tokenhold.initiateSunset(0,{from : accounts[0]});
+  await this.tokenhold.initiateSunset(0,{from : accounts[0]});
   let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
   //console.log(sunsetInitiatedAt1.toNumber());
 });
@@ -173,7 +171,7 @@ it("Should Not be able to Initialsed Sunset for non minted token(Failed)", async
   let sunsetInitiatedAt = await this.tokenhold.sunsetInitiatedAt(10);
   //console.log(sunsetInitiatedAt.toNumber());
   assert.equal(sunsetInitiatedAt.toNumber(),0);
-  let sunsetInitiatedNow = await this.tokenhold.initiateSunset(10,{from : accounts[0]});
+  await this.tokenhold.initiateSunset(10,{from : accounts[0]});
   let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(10);
   //assert.equal(sunsetInitiatedAt1.toNumber(),10);// This should be failed as explained in report under issue and as a suggestions also
   //let sunsetInitiatedAt1 = await this.tokenhold.sunsetInitiatedAt(0);
@@ -184,7 +182,7 @@ it('Should Not be able to mint token for with negative Sunset length(fail)', asy
 
   let totalSupply1 = await this.tokenhold.totalSupply();
   //console.log(totalSupply1.toNumber(),'Total supply before');
-  let mint = await this.tokenhold.mint(accounts[8],'Body',-200,{from : accounts[0]});
+  await this.tokenhold.mint(accounts[8],'Body',-200,{from : accounts[0]});
   let sunsetLength1 = await this.tokenhold.sunsetLength(1);
   let sunsetLength2 = await this.tokenhold.sunsetLength(2);
   let sunsetLength3 = await this.tokenhold.sunsetLength(3);
@@ -210,7 +208,8 @@ it("Should Not be able to submit Redemption Code Hash, for non minted token", as
 it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
     let ownerOld1 = await this.tokenhold.owner.call();
-    let newowner1 = await this.tokenhold.transferOwnership(accounts[4], { from: accounts[0] });
+    assert.equal(ownerOld1, accounts[0], 'Transfered ownership');
+    await this.tokenhold.transferOwnership(accounts[4], { from: accounts[0] });
     let ownerNew1 = await this.tokenhold.owner.call();
     assert.equal(ownerNew1, accounts[4], 'Transfered ownership');
   });
@@ -219,7 +218,7 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
     let ownerOld1 = await this.tokenhold.owner.call();
     assert.equal(ownerOld1, accounts[4], 'Transfered ownership');
-    let newowner = await this.tokenhold.renounceOwnership({from : accounts[4]});
+    await this.tokenhold.renounceOwnership({from : accounts[4]});
     let newowner1 = await this.tokenhold.owner.call();
     //console.log(newowner1);
     let address1 = 0x0000000000000000000000000000000000000000;
@@ -238,13 +237,13 @@ it("Should be able to transfer ownership of OathForge Contract ", async () => {
 
     let codeHash = await this.tokenhold.redemptionCodeHash(1);
     assert.equal(codeHash,0xce7918a1b0485d47e6c35a974c6c0d9c5bd2b3d0f56647c0d8d0999ef88a618a);
-    //console.log(newowner1.toNumber());
+    
   });
 
   it("Should be able to get timestamp Redemption Code Hash ", async () => {
 
-    let codeHash = await this.tokenhold.redemptionCodeHashSubmittedAt(1);
-    //console.log(newowner1.toNumber());
+    let codeSubmitteed = await this.tokenhold.redemptionCodeHashSubmittedAt(1);
+    //console.log(codeSubmitteed.toNumber());
   });
 
   it("Should be able to get correct next token ID and total supply ", async () => {
@@ -266,10 +265,10 @@ it('Should correctly initialize constructor values of Dai Token Contract', async
 
 it('Should issue Dai token to accounts[0],[1],[2],[3]', async () => {
 
-  let DAI = await this.daihold.releaseTokens(accounts[0],1);
-  let DAI1 = await this.daihold.releaseTokens(accounts[1],2);
-  let DAI2 = await this.daihold.releaseTokens(accounts[2],3);
-  let DAI3 = await this.daihold.releaseTokens(accounts[3],4);
+  await this.daihold.releaseTokens(accounts[0],1);
+  await this.daihold.releaseTokens(accounts[1],2);
+  await this.daihold.releaseTokens(accounts[2],3);
+  await this.daihold.releaseTokens(accounts[3],4);
   let balance1 = await this.daihold.balanceOf(accounts[0]);
   let balance2 = await this.daihold.balanceOf(accounts[1]);
   let balance3 = await this.daihold.balanceOf(accounts[2]);
@@ -348,7 +347,7 @@ it('Should check Auction Started at', async () => {
 
 it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder ', async () => {
 
-  let Approve = await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[1]});
+  await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[1]});
 
 });
 
