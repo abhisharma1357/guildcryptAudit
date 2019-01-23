@@ -335,7 +335,9 @@ it('Should Check Aucton completed or not', async () => {
 
 it('Should start Auction', async () => {
 
-  let = await this.RiftPact.startAuction();
+  let auctionStarted = await this.RiftPact.auctionStartedAt();
+  assert.equal(auctionStarted,0);
+  await this.RiftPact.startAuction();
 
 });
 
@@ -345,10 +347,11 @@ it('Should check Auction Started at', async () => {
   //console.log(auctionStarted.toNumber()); 
 });
 
-it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder ', async () => {
+it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder accounts[1]', async () => {
 
   await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[1]});
-
+  let allowance = await this.daihold.allowance(accounts[1],this.RiftPact.address);
+  assert.equal(allowance.toNumber()/10**18,1);
 });
 
 it('Should participate in a Auction by accounts[1]', async () => {
@@ -375,10 +378,11 @@ it('Should be able to get Top Bidder After Auction started and participation', a
   //console.log(topBid.toNumber());
 });
 
-it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder ', async () => {
+it('Should Approve Auction/RiftPact contract to transfer DAI tokens on the behalf of Bidder accounts[2] ', async () => {
 
-  let Approve = await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[2]});
-
+  await this.daihold.approve(this.RiftPact.address,10**18,{from :  accounts[2]});
+  let allowance = await this.daihold.allowance(accounts[2],this.RiftPact.address);
+  assert.equal(allowance.toNumber()/10**18,1);
 });
 
 it('Should participate in a Auction by accounts[2]', async () => {
@@ -390,7 +394,8 @@ it('Should participate in a Auction by accounts[2]', async () => {
   //console.log(balance2.toNumber()/10**18,'balance of accounts[2], dai token later');
   let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
   //console.log(balance3.toNumber()/10**18,'balance of RiftPact after, dai token later');
-
+  let topBid = await this.RiftPact.topBid();
+  assert.equal(topBid.toNumber(),20000000000);
 });
 
 it('Should Not be able participate in a Auction by accounts[3] by submiting bid less than minimum Bid', async () => {
@@ -445,15 +450,19 @@ try{
 
   it('Should Payout DAI Token After auction is completed', async () => {
     let balance4 = await this.daihold.balanceOf(this.RiftPact.address);
-    //console.log(balance4.toNumber()/10**18,'balance of contract, dai token Before');
+    assert.equal(balance4.toNumber(),198000000000000);
+    //console.log(balance4.toNumber(),'balance of contract, dai token Before');
     let balance = await this.daihold.balanceOf(accounts[0]);
-    //console.log(balance.toNumber()/10**18,'balance of accounts[1], dai token Before');
+    assert.equal(balance.toNumber()/10**18,1);
+    //console.log(balance.toNumber(),'balance of accounts[1], dai token Before');
     let auctionStatus = await this.RiftPact.auctionCompletedAt();
     //assert.equal(auctionStatus.toNumber(),this.auctionStatus1.toNumber());
     let = await this.RiftPact.payout({from : accounts[0]});
     let balance3 = await this.daihold.balanceOf(this.RiftPact.address);
+    assert.equal(balance3.toNumber(),0);
     //console.log(balance3.toNumber()/10**18,'balance of contract, dai token later');
     let balance1 = await this.daihold.balanceOf(accounts[0]);
+    assert.equal(balance1.toNumber()/10**18,1.000198);
     //console.log(balance1.toNumber()/10**18,'balance of accounts[1], dai token Later');
 
   });
